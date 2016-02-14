@@ -1,51 +1,52 @@
-/**
- * Copyright (c) 2015-present, Parse, LLC.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
+//
+//  PFInstallation.h
+//
+//  Copyright 2011-present Parse Inc. All rights reserved.
+//
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_IPHONE
+#import <Parse/PFNullability.h>
 #import <Parse/PFObject.h>
 #import <Parse/PFSubclassing.h>
+#else
+#import <ParseOSX/PFNullability.h>
+#import <ParseOSX/PFObject.h>
+#import <ParseOSX/PFSubclassing.h>
+#endif
 
-PF_TV_UNAVAILABLE_WARNING
-PF_WATCH_UNAVAILABLE_WARNING
+PF_ASSUME_NONNULL_BEGIN
 
-NS_ASSUME_NONNULL_BEGIN
-
-/**
+/*!
  A Parse Framework Installation Object that is a local representation of an
  installation persisted to the Parse cloud. This class is a subclass of a
- `PFObject`, and retains the same functionality of a PFObject, but also extends
+ <PFObject>, and retains the same functionality of a PFObject, but also extends
  it with installation-specific fields and related immutability and validity
  checks.
 
  A valid `PFInstallation` can only be instantiated via
- `+currentInstallation` because the required identifier fields
- are readonly. The `timeZone` and `badge` fields are also readonly properties which
+ <[PFInstallation currentInstallation]> because the required identifier fields
+ are readonly. The <timeZone> and <badge> fields are also readonly properties which
  are automatically updated to match the device's time zone and application badge
  when the `PFInstallation` is saved, thus these fields might not reflect the
  latest device state if the installation has not recently been saved.
 
- `PFInstallation` objects which have a valid `deviceToken` and are saved to
+ `PFInstallation` objects which have a valid <deviceToken> and are saved to
  the Parse cloud can be used to target push notifications.
  */
 
-PF_TV_UNAVAILABLE PF_WATCH_UNAVAILABLE @interface PFInstallation : PFObject<PFSubclassing>
+@interface PFInstallation : PFObject<PFSubclassing>
 
 ///--------------------------------------
-#pragma mark - Accessing the Current Installation
+/// @name Accessing the Current Installation
 ///--------------------------------------
 
-/**
- Gets the currently-running installation from disk and returns an instance of it.
+/*!
+ @abstract Gets the currently-running installation from disk and returns an instance of it.
 
- If this installation is not stored on disk, returns a `PFInstallation`
- with `deviceType` and `installationId` fields set to those of the
+ @discussion If this installation is not stored on disk, returns a `PFInstallation`
+ with <deviceType> and <installationId> fields set to those of the
  current installation.
 
  @result Returns a `PFInstallation` that represents the currently-running installation.
@@ -53,54 +54,54 @@ PF_TV_UNAVAILABLE PF_WATCH_UNAVAILABLE @interface PFInstallation : PFObject<PFSu
 + (instancetype)currentInstallation;
 
 ///--------------------------------------
-#pragma mark - Installation Properties
+/// @name Installation Properties
 ///--------------------------------------
 
-/**
- The device type for the `PFInstallation`.
+/*!
+ @abstract The device type for the `PFInstallation`.
  */
-@property (nonatomic, copy, readonly) NSString *deviceType;
+@property (nonatomic, strong, readonly) NSString *deviceType;
 
-/**
- The installationId for the `PFInstallation`.
+/*!
+ @abstract The installationId for the `PFInstallation`.
  */
-@property (nonatomic, copy, readonly) NSString *installationId;
+@property (nonatomic, strong, readonly) NSString *installationId;
 
-/**
- The device token for the `PFInstallation`.
+/*!
+ @abstract The device token for the `PFInstallation`.
  */
-@property (nullable, nonatomic, copy) NSString *deviceToken;
+@property (PF_NULLABLE_PROPERTY nonatomic, strong) NSString *deviceToken;
 
-/**
- The badge for the `PFInstallation`.
+/*!
+ @abstract The badge for the `PFInstallation`.
  */
 @property (nonatomic, assign) NSInteger badge;
 
-/**
- The name of the time zone for the `PFInstallation`.
+/*!
+ @abstract The name of the time zone for the `PFInstallation`.
  */
-@property (nullable, nonatomic, copy, readonly) NSString *timeZone;
+@property (PF_NULLABLE_PROPERTY nonatomic, strong, readonly) NSString *timeZone;
 
-/**
- The channels for the `PFInstallation`.
+/*!
+ @abstract The channels for the `PFInstallation`.
  */
-@property (nullable, nonatomic, copy) NSArray<NSString *> *channels;
+@property (PF_NULLABLE_PROPERTY nonatomic, strong) NSArray *channels;
 
-/**
- Sets the device token string property from an `NSData`-encoded token.
+/*!
+ @abstract Sets the device token string property from an `NSData`-encoded token.
 
  @param deviceTokenData A token that identifies the device.
  */
-- (void)setDeviceTokenFromData:(nullable NSData *)deviceTokenData;
+- (void)setDeviceTokenFromData:(PF_NULLABLE NSData *)deviceTokenData;
 
 ///--------------------------------------
-#pragma mark - Querying for Installations
+/// @name Querying for Installations
 ///--------------------------------------
 
-/**
- Creates a `PFQuery` for `PFInstallation` objects.
+/*!
+ @abstract Creates a <PFQuery> for `PFInstallation` objects.
 
- Only the following types of queries are allowed for installations:
+ @discussion Only the following types of queries are allowed for installations:
 
  - `[query getObjectWithId:<value>]`
  - `[query whereKey:@"installationId" equalTo:<value>]`
@@ -108,8 +109,8 @@ PF_TV_UNAVAILABLE PF_WATCH_UNAVAILABLE @interface PFInstallation : PFObject<PFSu
 
  You can add additional query conditions, but one of the above must appear as a top-level `AND` clause in the query.
  */
-+ (nullable PFQuery *)query;
++ (PF_NULLABLE PFQuery *)query;
 
 @end
 
-NS_ASSUME_NONNULL_END
+PF_ASSUME_NONNULL_END
